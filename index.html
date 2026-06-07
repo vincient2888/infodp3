@@ -1172,6 +1172,8 @@ const CONST_ICONS={'aquarius':'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4
     +'font-size:16px;font-weight:600;pointer-events:none;opacity:0;transition:opacity .2s;'
     +'white-space:nowrap;text-shadow:0 1px 7px rgba(0,0,0,.7);transform:translate(-50%,-100%);';
   document.body.appendChild(lbl);
+  let _hoverBtn=null,_lblRaf=null;
+  function trackLabel(){ if(!_hoverBtn){ _lblRaf=null; return; } const r=_hoverBtn.getBoundingClientRect(); lbl.style.left=(r.left+r.width/2)+'px'; lbl.style.top=(r.top-9)+'px'; _lblRaf=requestAnimationFrame(trackLabel); }
   document.querySelectorAll('.constellation').forEach(g=>{
     const col=g.dataset.color||'#9fe6ff';
     const kEl=g.querySelector('.const-label'); const kr=kEl?kEl.textContent.trim():g.dataset.id;
@@ -1181,15 +1183,13 @@ const CONST_ICONS={'aquarius':'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4
     if(CONST_ICONS[g.dataset.id]){ b.innerHTML='<img src="'+CONST_ICONS[g.dataset.id]+'" style="width:100%;height:100%;display:block;pointer-events:none;" alt="">'; }
     b.addEventListener('mouseenter',()=>{
       b.style.filter='drop-shadow(0 0 6px '+col+')'; b.style.width='58px'; b.style.height='58px';
-      const r=b.getBoundingClientRect();
-      lbl.textContent=kr; lbl.style.color=col;
-      lbl.style.left=(r.left+r.width/2)+'px'; lbl.style.top=(r.top-9)+'px'; lbl.style.opacity='1';
+      _hoverBtn=b; lbl.textContent=kr; lbl.style.color=col; lbl.style.opacity='1';
+      if(!_lblRaf) _lblRaf=requestAnimationFrame(trackLabel);
       showG1ConstHover(g);
     });
     b.addEventListener('mouseleave',()=>{
       b.style.filter=''; b.style.width='37px'; b.style.height='37px';
-      lbl.style.opacity='0';
-      clearG1Hover();
+      if(_hoverBtn===b){ _hoverBtn=null; lbl.style.opacity='0'; clearG1Hover(); }
     });
     inner.appendChild(b);
   });
