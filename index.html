@@ -1272,10 +1272,13 @@ const ConstDetail = (function(){
     overlay.appendChild(titleEl);
     hintEl=document.createElement('div');
     hintEl.style.cssText='position:absolute;left:0;right:0;bottom:20px;display:flex;gap:30px;align-items:center;justify-content:center;pointer-events:none;font-family:\"Noto Sans KR\",sans-serif;';
-    const _ctrls=[['drag','회전'],['zoom','확대/축소'],['dbl','평면뷰/입체뷰'],['hover','별 정보']];
-    hintEl.innerHTML=_ctrls.map(function(it){return '<span style=\"display:inline-flex;align-items:center;gap:9px;\">'
-      +((it[0]==='zoom'&&CTRL_ICONS.zoom2)?'<span style=\"display:inline-flex;flex-direction:column;align-items:center;gap:4px;\"><img src=\"'+CTRL_ICONS.zoom+'\" style=\"height:36px;display:block;\" alt=\"\"><img src=\"'+CTRL_ICONS.zoom2+'\" style=\"height:36px;display:block;\" alt=\"\"></span>':'<img src=\"'+CTRL_ICONS[it[0]]+'\" style=\"height:'+(_CTRL_MAC?(it[0]==='dbl'?38:36):(it[0]==='dbl'?45:38))+'px;display:block;\" alt=\"\">')
-      +'<span style=\"font-size:13px;color:rgba(240,242,245,.62);white-space:nowrap;\">'+it[1]+'</span></span>';}).join('');
+    const _ctrls=[['drag','회전'],['zoom','확대/축소'],['click','정지'],['dbl','평면뷰/입체뷰'],['hover','별 정보']];
+    var _ih=_CTRL_MAC?{drag:36.1,zoom:36.1,zoom2:34.2,click:34.2,dbl:37.9,hover:34.2}:{drag:38,zoom:38,click:41.3,dbl:45.4,hover:38};
+    var _mkimg=function(src,h){return '<img src="'+src+'" style="height:'+h+'px;display:block;" alt="">';};
+    hintEl.innerHTML=_ctrls.map(function(it){
+      var ic=(it[0]==='zoom'&&CTRL_ICONS.zoom2)?'<span style="display:inline-flex;flex-direction:column;align-items:center;gap:4px;">'+_mkimg(CTRL_ICONS.zoom,_ih.zoom)+_mkimg(CTRL_ICONS.zoom2,_ih.zoom2)+'</span>':_mkimg(CTRL_ICONS[it[0]],_ih[it[0]]);
+      return '<span style="display:inline-flex;align-items:center;gap:9px;"><span style="display:inline-flex;width:38px;height:'+(_CTRL_MAC?38:46)+'px;justify-content:center;align-items:flex-end;">'+ic+'</span><span style="font-size:13px;color:rgba(240,242,245,.62);white-space:nowrap;">'+it[1]+'</span></span>';
+    }).join('');
     overlay.appendChild(hintEl);
     infoEl=document.createElement('div');
     infoEl.style.cssText='position:absolute;left:30px;top:78px;min-width:170px;opacity:0;transition:opacity .15s;pointer-events:none;'
@@ -3426,9 +3429,12 @@ function exitBuildingToRegions(){
   const bh=document.createElement('div'); bh.id='bld-hint';
   bh.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:92;display:none;gap:26px;align-items:center;justify-content:center;pointer-events:none;font-family:"Noto Sans KR",sans-serif;';
   const _bi=[['drag','이동'],['rot','회전'],['zoom','확대/축소'],['dbl','뷰전환'],['hover','출발 시기']];
-  bh.innerHTML=_bi.map(function(it){return '<span style="display:inline-flex;align-items:center;gap:8px;">'
-    +((it[0]==='zoom'&&BLD_ICONS.zoom2)?'<span style="display:inline-flex;flex-direction:column;align-items:center;gap:4px;"><img src="'+BLD_ICONS.zoom+'" style="height:34px;display:block;" alt=""><img src="'+BLD_ICONS.zoom2+'" style="height:34px;display:block;" alt=""></span>':'<img src="'+BLD_ICONS[it[0]]+'" style="height:'+(_bldMac?(it[0]==='dbl'?36:34):(it[0]==='dbl'?43:36))+'px;display:block;" alt="">')
-    +'<span style="font-size:13px;color:rgba(38,38,38,.72);white-space:nowrap;">'+it[1]+'</span></span>';}).join('');
+  var _bh=_bldMac?{drag:36.1,rot:36.1,zoom:36.1,zoom2:34.2,dbl:37.9,hover:34.2}:{drag:38,rot:38,zoom:38,dbl:45.4,hover:38};
+  var _bmk=function(src,h){return '<img src="'+src+'" style="height:'+h+'px;display:block;" alt="">';};
+  bh.innerHTML=_bi.map(function(it){
+    var ic=(it[0]==='zoom'&&BLD_ICONS.zoom2)?'<span style="display:inline-flex;flex-direction:column;align-items:center;gap:4px;">'+_bmk(BLD_ICONS.zoom,_bh.zoom)+_bmk(BLD_ICONS.zoom2,_bh.zoom2)+'</span>':_bmk(BLD_ICONS[it[0]],_bh[it[0]]);
+    return '<span style="display:inline-flex;align-items:center;gap:8px;"><span style="display:inline-flex;width:38px;height:'+(_bldMac?38:46)+'px;justify-content:center;align-items:flex-end;">'+ic+'</span><span style="font-size:13px;color:rgba(38,38,38,.72);white-space:nowrap;">'+it[1]+'</span></span>';
+  }).join('');
   document.body.appendChild(bh);
   window.__bldSyncZoom=syncSlider;
   const stop=e=>{e.preventDefault();e.stopPropagation();};
